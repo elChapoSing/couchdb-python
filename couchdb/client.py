@@ -230,7 +230,7 @@ class Server(object):
         """
         del self[name]
 
-    def replicate(self, source, target, **options):
+    def replicate_transient(self, source, target, **options):
         """Replicate changes from the source database to the target database.
 
         :param source: URL of the source database
@@ -240,6 +240,18 @@ class Server(object):
         data = {'source': source, 'target': target}
         data.update(options)
         status, headers, data = self.resource.post_json('_replicate', data)
+        return data
+
+    def replicate_persistent(self, source, target, **options):
+        """Replicate changes from the source database to the target database.
+
+        :param source: URL of the source database
+        :param target: URL of the target database
+        :param options: optional replication args, e.g. continuous=True
+        """
+        data = {'source': source, 'target': target}
+        data.update(options)
+        status, headers, data = self.resource.post_json('_replicator', data)
         return data
 
     def add_user(self, name, password, roles=None):
